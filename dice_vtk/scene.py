@@ -14,7 +14,7 @@ from vtk import vtkLight
 # DICE modules
 # ============
 from dice_tools import wizard, diceProperty, diceSlot
-from dice_tools import DICEObject
+from dice_tools import DICEObject, diceCall
 from dice_vtk.properties import VtkSceneProperties
 from dice_vtk.interactor import Interactor
 from dice_vtk.geometries import TransformGismo
@@ -116,16 +116,16 @@ class VtkScene(DICEObject):
 
         self.frame = None
 
-        if 'win' in sys.platform:
-            import uuid
-            uid = str(uuid.uuid4())
-            if self.mmap(uid):
-                self.frame = mmap.mmap(-1, 1, uid)
-        else:
-            with NamedTemporaryFile(buffering=0) as f:
-                f.write(b'\x00')
-                if self.mmap(f.name):
-                    self.frame = mmap.mmap(f.fileno(), 0)
+        # if 'win' in sys.platform:
+        #     import uuid
+        #     uid = str(uuid.uuid4())
+        #     if self.mmap(uid):
+        #         self.frame = mmap.mmap(-1, 1, uid)
+        # else:
+        #     with NamedTemporaryFile(buffering=0) as f:
+        #         f.write(b'\x00')
+        #         if self.mmap(f.name):
+        #             self.frame = mmap.mmap(f.fileno(), 0)
 
         self.renderer = vtkRenderer()
 
@@ -155,6 +155,10 @@ class VtkScene(DICEObject):
         wizard.subscribe(self.w_property_changed)
         self.__axes = AxesWidget()
         self.add_object(self.__axes)
+
+    def connect(self):
+        super().connect()
+        self.render()
 
     @diceProperty('QVariant')
     def properties(self):
@@ -234,11 +238,15 @@ class VtkScene(DICEObject):
             if len(self.frame) != size[0]*size[1]*4:
                 self.frame.resize(size[0]*size[1]*4)
             self.frame[:] = data
-            self.update(size[0], size[1], True)
+            self._update(size[0], size[1], True)
         else:
             b = bytes(data)
             data = lz4.block.compress(b)
-            self.update(size[0], size[1], True, data)
+            self._update(size[0], size[1], True, data)
+
+    @diceCall
+    def _update(self, sx, sy, flip, data):
+        pass
 
     def size_changed(self, size_x, size_y):
         """
