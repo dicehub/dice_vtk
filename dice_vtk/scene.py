@@ -21,8 +21,9 @@ from dice_vtk.geometries import TransformGismo
 from dice_vtk.geometries import AxesWidget
 
 import lz4
+import lz4framed
 import os
-from time import time
+from time import time, perf_counter
 import mmap
 from OpenGL import GL
 from tempfile import NamedTemporaryFile
@@ -156,8 +157,8 @@ class VtkScene(DICEObject):
         self.__axes = AxesWidget()
         self.add_object(self.__axes)
 
-    def connect(self):
-        super().connect()
+    def connected(self):
+        super().connected()
         self.render()
 
     @diceProperty('QVariant')
@@ -240,8 +241,10 @@ class VtkScene(DICEObject):
             self.frame[:] = data
             self._update(size[0], size[1], True)
         else:
-            b = bytes(data)
-            data = lz4.block.compress(b)
+            # b = bytes(data)
+            t = perf_counter()
+            data = lz4framed.compress(data)
+            print(perf_counter()-t)
             self._update(size[0], size[1], True, data)
 
     @diceCall
