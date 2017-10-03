@@ -1,4 +1,4 @@
-from dice_tools import wizard, switch
+from dice_tools import wizard, process_messages
 
 class VtkSceneAnimation:
     
@@ -76,7 +76,7 @@ class VtkSceneAnimation:
                         self.__playing = False
                         wizard.w_animation_playing_changed(self, False)
                 else:
-                    switch()
+                    process_messages()
 
     def stop(self):
         self.__playing = False
