@@ -14,15 +14,16 @@ from vtk import vtkLight
 # DICE modules
 # ============
 from dice_tools import wizard, diceProperty, diceSlot
-from dice_tools import DICEObject
+from dice_tools import DICEObject, diceCall
+from dice_tools.helpers.xview import View
+
 from dice_vtk.properties import VtkSceneProperties
 from dice_vtk.interactor import Interactor
 from dice_vtk.geometries import TransformGismo
 from dice_vtk.geometries import AxesWidget
 
-import lz4
 import os
-from time import time
+from time import time, perf_counter
 import mmap
 from OpenGL import GL
 from tempfile import NamedTemporaryFile
@@ -102,7 +103,7 @@ class RenderWindowProxy(vtkGenericOpenGLRenderWindow):
         self.__scene.updated(size, buffer)
 
 
-class VtkScene(DICEObject):
+class VtkScene(View):
     """
     Implements interactive 3D scene with own render, camera and interactor.
     Uses `VTK <http://vtk.org>`_ to do the staff.
@@ -110,22 +111,9 @@ class VtkScene(DICEObject):
     __render_window = None
 
     def __init__(self, size_x=1, size_y=1, **kwargs):
-        super().__init__(base_type='ExposedView', **kwargs)
+        super().__init__(**kwargs)
         self.__size_x = size_x
         self.__size_y = size_y
-
-        self.frame = None
-
-        if 'win' in sys.platform:
-            import uuid
-            uid = str(uuid.uuid4())
-            if self.mmap(uid):
-                self.frame = mmap.mmap(-1, 1, uid)
-        else:
-            with NamedTemporaryFile(buffering=0) as f:
-                f.write(b'\x00')
-                if self.mmap(f.name):
-                    self.frame = mmap.mmap(f.fileno(), 0)
 
         self.renderer = vtkRenderer()
 
@@ -155,6 +143,10 @@ class VtkScene(DICEObject):
         wizard.subscribe(self.w_property_changed)
         self.__axes = AxesWidget()
         self.add_object(self.__axes)
+
+    def connected(self):
+        super().connected()
+        self.render()
 
     @diceProperty('QVariant')
     def properties(self):
@@ -230,15 +222,7 @@ class VtkScene(DICEObject):
             self.render(True)
 
     def updated(self, size, data):
-        if self.frame is not None:
-            if len(self.frame) != size[0]*size[1]*4:
-                self.frame.resize(size[0]*size[1]*4)
-            self.frame[:] = data
-            self.update(size[0], size[1], True)
-        else:
-            b = bytes(data)
-            data = lz4.block.compress(b)
-            self.update(size[0], size[1], True, data)
+        self.update(size[0], size[1], True, data)
 
     def size_changed(self, size_x, size_y):
         """
