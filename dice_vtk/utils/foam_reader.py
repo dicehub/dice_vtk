@@ -74,7 +74,7 @@ class FOAMFilter:
 
 class FoamReader(VtkSceneAnimation):
 
-    def __init__(self, path, **kwargs):
+    def __init__(self, path, cells=True, **kwargs):
         super().__init__(**kwargs)
 
         reader = vtkPOpenFOAMReader()
@@ -88,11 +88,14 @@ class FoamReader(VtkSceneAnimation):
         reader.SetFileName(os.path.join(path, 'p.foam'))
         reader.Update()
 
-        reader.DisableAllCellArrays()
+        if cells:
+            reader.EnableAllCellArrays()
+        else:
+            reader.DisableAllCellArrays()
         reader.EnableAllLagrangianArrays()
         reader.EnableAllPointArrays()
         reader.EnableAllPatchArrays()
-        reader.Update()
+        reader.Update()                                                                                                                                                                                             
 
         self.__reader = reader
 
