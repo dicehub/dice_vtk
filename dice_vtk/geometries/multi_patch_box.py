@@ -11,12 +11,14 @@ from vtk import vtkPlane
 from vtk import mutable as vtk_mutable
 from vtk import vtkBoundedPlanePointPlacer
 import math
+
 # DICE modules
 # ============
 from .geometry_base import GeometryBase, GeometryProperty
 from ..interactor import BasicInteractor
 from dice_tools import wizard
 from itertools import chain
+
 
 class WidgetInstance(BasicInteractor):
     def __init__(self, parent, scene):
@@ -98,8 +100,7 @@ class WidgetInstance(BasicInteractor):
 
         display_pt = self.renderer.GetDisplayPoint()
         display_pt = (display_pt[0] + x - self.drag_point[0],
-                display_pt[1] + y - self.drag_point[1])
-
+                      display_pt[1] + y - self.drag_point[1])
 
         plane = vtkPlane()
         plane.SetOrigin(self.drag_pos)
@@ -138,6 +139,7 @@ class WidgetInstance(BasicInteractor):
             self.drag_axis = self.drag_axis - 3
         minmax[self.drag_axis] = value
         self.parent.minmax = minmax
+
 
 class MultiPatchBox(GeometryBase):
     # 0     1     2     3     4     5
@@ -282,6 +284,9 @@ class MultiPatchBox(GeometryBase):
 
     @GeometryProperty
     def position(self):
+        """
+        The center of the box.
+        """
         return [(v[0]+v[1])/2.0 for v in zip(self.min, self.max)]
 
     @position.setter

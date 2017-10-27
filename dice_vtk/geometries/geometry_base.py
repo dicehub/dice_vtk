@@ -14,6 +14,7 @@ from vtk import vtkBoundingBox
 # ============
 from dice_tools import wizard
 
+
 class VisObject(metaclass=ABCMeta):
 
     @abstractmethod
@@ -23,6 +24,7 @@ class VisObject(metaclass=ABCMeta):
     @abstractmethod
     def detach(self, scene):
         pass
+
 
 class GeometryProperty(property):
 
@@ -52,12 +54,14 @@ class GeometryProperty(property):
         self.__setter = fset
         return self
 
+
 class GeometryBaseMeta(ABCMeta):
     def __new__(cls, classname, bases, classDict):
         for name, attr in classDict.items():
             if isinstance(attr, GeometryProperty):
                 attr.name = name
         return super().__new__(cls, classname, bases, classDict)
+
 
 class GeometryBase(VisObject, metaclass=GeometryBaseMeta):
     selection = weakref.WeakSet()

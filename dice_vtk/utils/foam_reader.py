@@ -81,14 +81,14 @@ class FoamReader(VtkSceneAnimation):
 
         reader.SetCaseType(1)
         reader.CreateCellToPointOn()
-        reader.CacheMeshOff()
+        reader.CacheMeshOn()
         reader.DecomposePolyhedraOn()
         reader.ReleaseDataFlagOn()
         reader.ReadZonesOn()
         reader.SetFileName(os.path.join(path, 'p.foam'))
         reader.Update()
 
-        reader.EnableAllCellArrays()
+        reader.DisableAllCellArrays()
         reader.EnableAllLagrangianArrays()
         reader.EnableAllPointArrays()
         reader.EnableAllPatchArrays()
