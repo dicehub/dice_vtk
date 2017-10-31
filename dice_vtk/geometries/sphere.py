@@ -1,6 +1,12 @@
-from .simple_geometry import SimpleGeometry
+# External modules
+# ================
 from vtk import vtkSphereSource
+
+# DICE modules
+# ============
+from .simple_geometry import SimpleGeometry
 from .geometry_base import GeometryProperty
+
 
 class Sphere(SimpleGeometry):
 

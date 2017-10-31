@@ -7,10 +7,27 @@ from vtk import vtkPlaneSource
 from .simple_geometry import SimpleGeometry
 from .geometry_base import GeometryProperty
 
+
 class Plane(SimpleGeometry):
     def __init__(self, name='Plane', **kwargs):
         super().__init__(name=name,
             source=vtkPlaneSource, **kwargs)
+
+    @GeometryProperty
+    def center(self):
+        return self.source.GetCenter()
+
+    @center.setter
+    def center(self, value):
+        self.source.SetCenter(value)
+
+    @GeometryProperty
+    def origin(self):
+        return self.source.GetOrigin()
+
+    @origin.setter
+    def origin(self, value):
+        self.source.SetOrigin(value)
 
     @GeometryProperty
     def point1(self):
