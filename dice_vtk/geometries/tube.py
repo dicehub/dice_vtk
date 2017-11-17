@@ -40,7 +40,7 @@ class Tube(SimpleGeometry):
     def point2(self):
         return self.line.GetPoint2()
 
-    @point1.setter
+    @point2.setter
     def point2(self, value):
         self.line.SetPoint2(value)
 

@@ -20,6 +20,12 @@ class ScalarBarWidget(VisObject):
         super().__init__(**kwargs)
         self.instances = {}
         self.__lut = vtk.vtkLookupTable()
+
+        # This creates a blue to red lut.
+        # Other lut: https://imagej.nih.gov/ij/download/luts/
+        # How to set: https://public.kitware.com/pipermail/vtkusers/2011-April/067138.html
+        self.__lut.SetHueRange(0.667, 0.0)
+
         self.__lut.Build()
         self.__scalar_bar = vtk.vtkScalarBarActor()
         self.__scalar_bar.SetOrientationToHorizontal()
