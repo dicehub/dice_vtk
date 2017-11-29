@@ -1,5 +1,8 @@
 # Standard Python modules
 # =======================
+import json
+import itertools
+import os
 
 # External modules
 # ================
@@ -10,9 +13,6 @@ from dice_tools import diceSlot, diceProperty, instantiate, wizard
 from dice_tools.helpers.xmodel import list_of_dicts_model
 from dice_vtk import VtkScene
 
-import json
-import itertools
-import os
 
 class VisApp:
     """
@@ -213,7 +213,6 @@ class VisApp:
         """
         if scene_name in self.__scenes:
             return self.__scenes[scene_name]
-
 
     def vis_reset_camera(self, tag = 'default'):
         """

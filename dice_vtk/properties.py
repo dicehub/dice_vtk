@@ -14,12 +14,13 @@ from dice_vtk.geometries.geometry_base import GeometryBase
 from dice_vtk.geometries import ClipWidget, CutterWidget
 from vtk import vtkMath
 
+
 class VtkObject(ModelItem):
 
     def __init__(self, props, obj, **kwargs):
         super().__init__(**kwargs)
         self.__props = props
-        self.__model =  self.__props.model
+        self.__model = self.__props.model
         self.__obj = obj
         wizard.subscribe(self.w_property_changed, obj=obj)
         wizard.subscribe(self.w_geometry_object_clicked, obj=obj)
@@ -69,6 +70,7 @@ class VtkObject(ModelItem):
     @modelMethod('remove')
     def remove(self):
         self.__props.remove_widget(self)
+
 
 class AnimControl(DICEObject):
 

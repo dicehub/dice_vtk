@@ -7,6 +7,7 @@ from vtk import vtkRegularPolygonSource
 from .simple_geometry import SimpleGeometry
 from .geometry_base import GeometryProperty
 
+
 class RegularPolygon(SimpleGeometry):
     def __init__(self, name='RegularPolygon', **kwargs):
         super().__init__(name=name,

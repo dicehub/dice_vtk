@@ -1,18 +1,20 @@
 from .geometry_base import VisObject
 import vtk
 
+
 class ScalarBarWidgetInstance:
 
     def __init__(self, scene, actor):
         self.widget = vtk.vtkScalarBarWidget()
         self.widget.SetInteractor(scene.interactor)
         self.widget.SetScalarBarActor(actor)
-        self.widget.GetScalarBarRepresentation().SetPosition(0,0.3)
-        self.widget.GetScalarBarRepresentation().SetPosition2(0.1,0.5)
+        self.widget.GetScalarBarRepresentation().SetPosition(0.05, 0.4)
+        self.widget.GetScalarBarRepresentation().SetPosition2(0.1, 0.5)
         self.widget.On()
 
     def destroy(self):
         self.widget.Off()
+
 
 class ScalarBarWidget(VisObject):
 

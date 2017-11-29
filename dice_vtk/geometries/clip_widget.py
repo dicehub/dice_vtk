@@ -16,6 +16,7 @@ from .geometry_base import GeometryProperty
 from dice_tools import wizard
 from vtk import vtkExtractDataSets
 
+
 class ClipWidgetInstance:
 
     def __init__(self, parent, rep_actor, scene):
@@ -43,7 +44,8 @@ class ClipWidgetInstance:
     def destroy(self):
         self.__widget.Off()
         self.__widget.SetEnabled(0)
-        
+
+
 class ClipWidget(SimpleGeometry):
 
     def __init__(self, target, **kwargs):

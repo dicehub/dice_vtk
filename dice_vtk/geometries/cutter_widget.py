@@ -70,6 +70,7 @@ from .simple_geometry import SimpleGeometry
 from .geometry_base import GeometryProperty
 from dice_tools import wizard
 
+
 class ClipWidgetInstance:
 
     def __init__(self, parent, rep_actor, scene):
@@ -97,7 +98,8 @@ class ClipWidgetInstance:
     def destroy(self):
         self.__widget.Off()
         self.__widget.SetEnabled(0)
-        
+
+
 class CutterWidget(SimpleGeometry):
 
     def __init__(self, target, **kwargs):
