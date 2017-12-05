@@ -124,7 +124,7 @@ class ClipWidget(SimpleGeometry):
         del self.__instances[scene]
 
     def on_start_interaction(self):
-        self.__target.visible = True
+        # self.__target.visible = True
         self.visible = False
 
     def on_stop_interaction(self):

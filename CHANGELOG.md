@@ -1,3 +1,4 @@
+- Multiple improvements for openfoam results visualization.
 - Changes to position of the colormap.
 - Minor code styling changes.
 - Fixes for sphere, tube and plane.

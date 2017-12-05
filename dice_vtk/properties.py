@@ -80,7 +80,7 @@ class AnimControl(DICEObject):
         self.__props = props
         self.__scene = props.scene
         self.__animation = None
-        self.__active = False
+        self.__active = True
 
     update = diceSignal(name='update')
 

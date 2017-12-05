@@ -1,5 +1,6 @@
 from dice_tools import wizard, process_messages
 
+
 class VtkSceneAnimation:
     
     def __init__(self, **kwargs):

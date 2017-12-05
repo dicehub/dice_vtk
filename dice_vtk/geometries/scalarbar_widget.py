@@ -27,11 +27,17 @@ class ScalarBarWidget(VisObject):
         # Other lut: https://imagej.nih.gov/ij/download/luts/
         # How to set: https://public.kitware.com/pipermail/vtkusers/2011-April/067138.html
         self.__lut.SetHueRange(0.667, 0.0)
+        # self.__lut.SetNumberOfTableValues(256)
 
         self.__lut.Build()
         self.__scalar_bar = vtk.vtkScalarBarActor()
         self.__scalar_bar.SetOrientationToHorizontal()
         self.__scalar_bar.SetLookupTable(self.__lut)
+        self.__scalar_bar.SetTextPositionToSucceedScalarBar()
+
+    @property
+    def scalar_bar(self):
+        return self.__scalar_bar
 
     @property
     def lut(self):
@@ -45,3 +51,11 @@ class ScalarBarWidget(VisObject):
     def detach(self, scene):
         super().detach(scene)
         self.instances.pop(scene).destroy()
+
+    @property
+    def title(self):
+        return self.GetTitle()
+
+    @title.setter
+    def title(self, value):
+        self.__scalar_bar.SetTitle(value)
