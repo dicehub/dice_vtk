@@ -315,11 +315,15 @@ class PlaneProps(DICEObject):
     def crinkle(self):
         if self.__widget and isinstance(self.__widget, ClipWidget):
             return self.__widget.crinkle
+        elif self.__widget and isinstance(self.__widget, CutterWidget):
+            return self.__widget.crinkle
         return False
 
     @crinkle.setter
     def crinkle(self, value):
         if self.__widget and isinstance(self.__widget, ClipWidget):
+            self.__widget.crinkle = value
+        elif self.__widget and isinstance(self.__widget, CutterWidget):
             self.__widget.crinkle = value
         self.update()
 

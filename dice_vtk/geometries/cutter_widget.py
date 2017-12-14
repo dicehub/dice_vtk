@@ -62,7 +62,8 @@ from vtk import vtkCutter, \
     vtkImplicitPlaneRepresentation, \
     vtkImplicitPlaneWidget2, \
     vtkPlane, \
-    vtkLODActor
+    vtkLODActor, \
+    vtkExtractGeometry
 
 from vtk import vtkBoundingBox
 
@@ -112,6 +113,9 @@ class CutterWidget(SimpleGeometry):
         self.__normal = [1, 0, 0]
         self.color = [0,0,1]
 
+        self.__crinkle = False
+        self.__modified = True
+
         bounds = self.__target.get_bounds(None)
         center = [(a+b)/2.0 for a, b in zip(bounds[::2], bounds[1::2])]
         for i in range(0, 6, 2):
@@ -127,6 +131,23 @@ class CutterWidget(SimpleGeometry):
         self.__rep_actor.SetEdgeColor(0, 1, 0)
         self.__rep_actor.GetOutlineProperty().SetColor(1, 0, 1)
         self.__rep_actor.OutlineTranslationOff()
+
+    def __set_crinkle_source(self):
+        """
+        https://github.com/Kitware/ParaView/blob/b41d27999a4ac854f4a0e61d98d09c53e7583a60/ParaViewCore/VTKExtensions/Default/vtkPVMetaSliceDataSet.cxx
+        :return:
+        """
+        source=vtkExtractGeometry()
+        source.SetImplicitFunction(self.__plane)
+        source.SetExtractInside(1)
+        source.SetExtractOnlyBoundaryCells(1)
+        source.SetExtractBoundaryCells(1)
+        for v in self.__target.get_sources():
+            if v.IsA("vtkAlgorithm"):
+                source.AddInputConnection(v.GetOutputPort())
+            elif v.IsA("vtkDataObject"):
+                source.AddInputData(v)
+        self.source = source
 
     @property
     def target(self):
@@ -165,12 +186,19 @@ class CutterWidget(SimpleGeometry):
         self.__rep_actor.GetPlane(self.__plane)
         source = vtkCutter()
         source.SetCutFunction(self.__plane)
-        for v in self.__target.get_sources():
-            if v.IsA("vtkAlgorithm"):
-                source.AddInputConnection(v.GetOutputPort())
-            elif v.IsA("vtkDataObject"):
-                source.AddInputDataObject(v)
-        self.source = source
+
+        if self.__modified:
+            if self.__crinkle:
+                self.__set_crinkle_source()
+            else:
+                for v in self.__target.get_sources():
+                    if v.IsA("vtkAlgorithm"):
+                        source.AddInputConnection(v.GetOutputPort())
+                    elif v.IsA("vtkDataObject"):
+                        source.AddInputDataObject(v)
+                self.source = source
+
+        self.__modified = False
         self.__target.visible = False
         self.mapper.SetScalarMode(self.__target.mapper.GetScalarMode())
         self.mapper.SelectColorArray(self.__target.mapper.GetArrayName())
@@ -197,3 +225,13 @@ class CutterWidget(SimpleGeometry):
     def plane_origin(self, value):
         if tuple(self.__rep_actor.GetOrigin()) != tuple(value):
             self.__rep_actor.SetOrigin(value)
+
+    @GeometryProperty
+    def crinkle(self):
+        return self.__crinkle
+
+    @crinkle.setter
+    def crinkle(self, value):
+        if self.__crinkle != value:
+            self.__modified = True
+            self.__crinkle = value
