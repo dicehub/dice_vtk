@@ -14,12 +14,13 @@ from dice_vtk.geometries.geometry_base import GeometryBase
 from dice_vtk.geometries import ClipWidget, CutterWidget
 from vtk import vtkMath
 
+
 class VtkObject(ModelItem):
 
     def __init__(self, props, obj, **kwargs):
         super().__init__(**kwargs)
         self.__props = props
-        self.__model =  self.__props.model
+        self.__model = self.__props.model
         self.__obj = obj
         wizard.subscribe(self.w_property_changed, obj=obj)
         wizard.subscribe(self.w_geometry_object_clicked, obj=obj)
@@ -70,6 +71,7 @@ class VtkObject(ModelItem):
     def remove(self):
         self.__props.remove_widget(self)
 
+
 class AnimControl(DICEObject):
 
     def __init__(self, props, **kwargs):
@@ -78,7 +80,7 @@ class AnimControl(DICEObject):
         self.__props = props
         self.__scene = props.scene
         self.__animation = None
-        self.__active = False
+        self.__active = True
 
     update = diceSignal(name='update')
 
@@ -313,11 +315,15 @@ class PlaneProps(DICEObject):
     def crinkle(self):
         if self.__widget and isinstance(self.__widget, ClipWidget):
             return self.__widget.crinkle
+        elif self.__widget and isinstance(self.__widget, CutterWidget):
+            return self.__widget.crinkle
         return False
 
     @crinkle.setter
     def crinkle(self, value):
         if self.__widget and isinstance(self.__widget, ClipWidget):
+            self.__widget.crinkle = value
+        elif self.__widget and isinstance(self.__widget, CutterWidget):
             self.__widget.crinkle = value
         self.update()
 

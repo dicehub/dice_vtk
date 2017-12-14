@@ -22,6 +22,7 @@ from ..geometries.simple_geometry import SimpleGeometry
 from vtk import vtkExtractBlock
 from itertools import chain
 
+
 class FOAMFilter:
 
     def __init__(self, foam_mesh, patch_index):
@@ -72,27 +73,31 @@ class FOAMFilter:
         out.ShallowCopy(result)
         return 1
 
+
 class FoamReader(VtkSceneAnimation):
 
-    def __init__(self, path, **kwargs):
+    def __init__(self, path, cells=True, **kwargs):
         super().__init__(**kwargs)
 
         reader = vtkPOpenFOAMReader()
 
         reader.SetCaseType(1)
         reader.CreateCellToPointOn()
-        reader.CacheMeshOff()
+        reader.CacheMeshOn()
         reader.DecomposePolyhedraOn()
         reader.ReleaseDataFlagOn()
         reader.ReadZonesOn()
         reader.SetFileName(os.path.join(path, 'p.foam'))
         reader.Update()
 
-        reader.EnableAllCellArrays()
+        if cells:
+            reader.EnableAllCellArrays()
+        else:
+            reader.DisableAllCellArrays()
         reader.EnableAllLagrangianArrays()
         reader.EnableAllPointArrays()
         reader.EnableAllPatchArrays()
-        reader.Update()
+        reader.Update()                                                                                                                                                                                             
 
         self.__reader = reader
 
@@ -132,7 +137,6 @@ class FoamReader(VtkSceneAnimation):
             times.append(time_values.GetValue(i))
         self.times = times
         self.set_frame(-1)
-
 
     @property
     def patch_names(self):

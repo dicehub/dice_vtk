@@ -10,6 +10,7 @@ from vtk import vtkCubeSource
 from .simple_geometry import SimpleGeometry
 from .geometry_base import GeometryProperty
 
+
 class Cube(SimpleGeometry):
     """
     Creates a cube centered at origin. The cube is represented with four-sided

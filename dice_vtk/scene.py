@@ -31,6 +31,7 @@ from contextlib import contextmanager
 import weakref
 import sys
 
+
 class RenderWindowProxy(vtkGenericOpenGLRenderWindow):
 
     __render_window = None
@@ -90,7 +91,6 @@ class RenderWindowProxy(vtkGenericOpenGLRenderWindow):
         RenderWindowProxy.__render_window.SetNumberOfLayers(self.GetNumberOfLayers())
         interactor = self.GetInteractor()
         interactor.SetRenderWindow(RenderWindowProxy.__render_window)
-
 
     def Render(self):
         self.activate()
@@ -266,7 +266,6 @@ class VtkScene(View):
         self.interactors[-1].mouse_press(btn, x, y, modifiers)
         # self.render(False)
 
-
     def mouse_release(self, btn, x, y, modifiers):
         """
         Mouse button release event handler.
@@ -385,7 +384,6 @@ class VtkScene(View):
         self.renderer.ResetCamera()
         # self.update_camera()
         self.render()
-
 
     def update_camera(self):
         self.renderer.ResetCameraClippingRange()

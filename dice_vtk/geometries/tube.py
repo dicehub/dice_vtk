@@ -10,8 +10,9 @@ from vtk import vtkLineSource, \
 from .simple_geometry import SimpleGeometry
 from .geometry_base import GeometryProperty
 
+
 class Tube(SimpleGeometry):
-    def __init__(self, name='Tube', **props):
+    def __init__(self, name='Tube', **kwargs):
         super().__init__(name=name,
             source=vtkTubeFilter, **kwargs)
 
@@ -25,7 +26,7 @@ class Tube(SimpleGeometry):
         self.source.SetCapping(1)
         self.source.Update()
 
-        actor.GetProperty().SetOpacity(0.5)
+        self.actor.GetProperty().SetOpacity(0.5)
 
     @GeometryProperty
     def point1(self):
@@ -39,7 +40,7 @@ class Tube(SimpleGeometry):
     def point2(self):
         return self.line.GetPoint2()
 
-    @point1.setter
+    @point2.setter
     def point2(self, value):
         self.line.SetPoint2(value)
 

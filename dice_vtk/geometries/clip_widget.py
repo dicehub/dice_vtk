@@ -16,6 +16,7 @@ from .geometry_base import GeometryProperty
 from dice_tools import wizard
 from vtk import vtkExtractDataSets
 
+
 class ClipWidgetInstance:
 
     def __init__(self, parent, rep_actor, scene):
@@ -43,7 +44,8 @@ class ClipWidgetInstance:
     def destroy(self):
         self.__widget.Off()
         self.__widget.SetEnabled(0)
-        
+
+
 class ClipWidget(SimpleGeometry):
 
     def __init__(self, target, **kwargs):
@@ -77,6 +79,10 @@ class ClipWidget(SimpleGeometry):
         self.__rep_actor.OutlineTranslationOff()
        
     def __set_clip_source(self):
+        """
+        https://github.com/Kitware/ParaView/blob/b41d27999a4ac854f4a0e61d98d09c53e7583a60/ParaViewCore/VTKExtensions/Default/vtkPVMetaClipDataSet.cxx
+        :return:
+        """
         for v in self.__target.get_sources():
             if (not v.IsA("vtkPolyData") and not
                     v.IsA("vtkPolyDataAlgorithm")):
@@ -99,8 +105,12 @@ class ClipWidget(SimpleGeometry):
     def __set_crinkle_source(self):
         source=vtkExtractGeometry()
         source.SetImplicitFunction(self.__plane)
+        source.SetExtractOnlyBoundaryCells(0)
+        source.SetExtractBoundaryCells(1)
         if self.__inside_out:
             source.ExtractInsideOn()
+        else:
+            source.ExtractInsideOff()
         for v in self.__target.get_sources():
             if v.IsA("vtkAlgorithm"):
                 source.AddInputConnection(v.GetOutputPort())
@@ -122,7 +132,7 @@ class ClipWidget(SimpleGeometry):
         del self.__instances[scene]
 
     def on_start_interaction(self):
-        self.__target.visible = True
+        # self.__target.visible = True
         self.visible = False
 
     def on_stop_interaction(self):
