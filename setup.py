@@ -6,7 +6,7 @@ with open('README.md') as f:
 
 setup(
     name='dice_vtk',
-    version='17.12.0',
+    version='18.01.0',
     author='DICEhub',
     author_email='info@dicehub.com',
     description='DICE application tools',
